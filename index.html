@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ShopSphere - Dashboard Produk Interaktif berbasis REST API DummyJSON untuk Penilaian Tengah Semester Pemrograman Web">
+    <title>ShopSphere - Interactive Product Dashboard | PTS Pemweb 2026</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Skip Link Aksesibilitas Keyboard -->
+    <a href="#main" class="skip-link">Lewati ke konten utama</a>
+
+    <!-- Header Semantik: Identitas Aplikasi & Mahasiswa -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="brand-group">
+                <h1 class="brand-title">ShopSphere Dashboard</h1>
+                <p class="student-badge">
+                    <strong>Pengembang:</strong> Muhammad Andrian Syukur Ramadhan | 
+                    <strong>NPM:</strong> 2440304014 | 
+                    <strong>Kelas:</strong> Pemrograman Web (PTS 2026)
+                </p>
+            </div>
+            <nav class="site-nav" aria-label="Navigasi Utama">
+                <a href="#hero" class="nav-link">Tentang</a>
+                <a href="#statistik" class="nav-link">Statistik</a>
+                <a href="#filter-harga" class="nav-link">Penyaringan</a>
+                <a href="#katalog" class="nav-link">Katalog Produk</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Konten Utama Semantik -->
+    <main id="main">
+        <!-- Section 1: Hero / Deskripsi Singkat Sistem -->
+        <section id="hero" class="section hero-section" aria-labelledby="hero-heading">
+            <div class="hero-content">
+                <h2 id="hero-heading">Dashboard Interaktif Katalog Produk UMKM</h2>
+                <p>
+                    Aplikasi ini mengintegrasikan data produk dari <strong>REST API DummyJSON</strong> secara dinamis.
+                    Dirancang dengan fitur statistik harga dan stok (Y=1), validasi rentang harga berkelanjutan (Z=4),
+                    serta mekanisme pemulihan retry saat koneksi terputus dan perekaman timestamp pembaruan data (C=1).
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Statistik Sederhana (Fitur Y=1) -->
+        <section id="statistik" class="section stats-section" aria-labelledby="stats-heading">
+            <div class="section-header">
+                <h2 id="stats-heading">Ringkasan Statistik Produk</h2>
+                <p class="section-desc">Kalkulasi metrik otomatis dari data aktif menggunakan array methods JavaScript (ES6+).</p>
+            </div>
+            <div class="stats-grid">
+                <article class="stat-card" id="stat-avg-price">
+                    <h3 class="stat-title">Rata-rata Harga</h3>
+                    <p class="stat-value" id="val-avg-price">-</p>
+                    <p class="stat-note">Kalkulasi rata-rata harga produk yang tampil</p>
+                </article>
+                <article class="stat-card" id="stat-max-price">
+                    <h3 class="stat-title">Produk Termahal</h3>
+                    <p class="stat-value" id="val-max-price">-</p>
+                    <p class="stat-note" id="note-max-title">Mencari item dengan harga tertinggi</p>
+                </article>
+                <article class="stat-card" id="stat-total-stock">
+                    <h3 class="stat-title">Total Stok Tersedia</h3>
+                    <p class="stat-value" id="val-total-stock">-</p>
+                    <p class="stat-note">Akumulasi kuantitas unit stok seluruh produk</p>
+                </article>
+                <article class="stat-card" id="stat-total-items">
+                    <h3 class="stat-title">Jumlah Produk Terpilih</h3>
+                    <p class="stat-value" id="val-total-items">0 Item</p>
+                    <p class="stat-note">Produk sesuai kriteria penyaringan</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Section 3: Validasi Form Rentang Harga (Fitur Z=4) -->
+        <section id="filter-harga" class="section form-section" aria-labelledby="filter-form-heading">
+            <div class="section-header">
+                <h2 id="filter-form-heading">Penyaringan Rentang Harga (Validasi Form Berkelanjutan)</h2>
+                <p class="section-desc">Formulir validasi client-side: Harga Maksimal wajib lebih besar atau sama dengan Harga Minimal.</p>
+            </div>
+
+            <form id="price-range-form" class="custom-form" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="min-price">Harga Minimal ($):</label>
+                        <input 
+                            type="number" 
+                            id="min-price" 
+                            name="minPrice" 
+                            placeholder="Contoh: 10" 
+                            min="0" 
+                            step="any"
+                            aria-describedby="min-price-error"
+                        >
+                        <span id="min-price-error" class="input-feedback error-feedback" role="alert" aria-live="polite"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max-price">Harga Maksimal ($):</label>
+                        <input 
+                            type="number" 
+                            id="max-price" 
+                            name="maxPrice" 
+                            placeholder="Contoh: 100" 
+                            min="0" 
+                            step="any"
+                            aria-describedby="max-price-error"
+                        >
+                        <span id="max-price-error" class="input-feedback error-feedback" role="alert" aria-live="polite"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="btn-apply-filter" class="btn btn-primary">Terapkan Filter Rentang</button>
+                    <button type="reset" id="btn-reset-filter" class="btn btn-secondary">Reset Rentang</button>
+                </div>
+
+                <!-- Notifikasi Status Form -->
+                <div id="form-status-msg" class="form-status hidden" role="status" aria-live="polite"></div>
+            </form>
+        </section>
+
+        <!-- Section 4: Kontrol Filter Kategori & Katalog Produk (Fitur Y=1 & Challenge C=1) -->
+        <section id="katalog" class="section catalog-section" aria-labelledby="catalog-heading">
+            <div class="catalog-toolbar">
+                <div class="toolbar-left">
+                    <h2 id="catalog-heading">Katalog Produk</h2>
+                    <!-- Timestamp Data Dimuat (Challenge C=1) -->
+                    <div id="timestamp-container" class="timestamp-badge" aria-live="polite">
+                        <span class="timestamp-icon" aria-hidden="true">⏱</span>
+                        <span id="timestamp-text">Status: Menunggu pemuatan data...</span>
+                    </div>
+                </div>
+
+                <!-- Filter Kategori Real-Time (Fitur Y=1) -->
+                <div class="toolbar-right">
+                    <label for="category-select" class="filter-label">Filter Kategori:</label>
+                    <select id="category-select" class="category-dropdown" aria-controls="product-grid">
+                        <option value="all">Semua Kategori</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Loading State Indicator -->
+            <div id="loading-state" class="state-container loading-container" role="status" aria-live="polite">
+                <div class="spinner" aria-hidden="true"></div>
+                <p class="state-text">Memuat data produk dari REST API DummyJSON...</p>
+            </div>
+
+            <!-- Error State Indicator & Retry Button (Challenge C=1) -->
+            <div id="error-state" class="state-container error-container hidden" role="alert" aria-live="assertive">
+                <div class="error-icon" aria-hidden="true">⚠️</div>
+                <h3 class="error-title">Gagal Mengambil Data Produk</h3>
+                <p id="error-message" class="error-text">Terjadi kendala saat menghubungi server API.</p>
+                <button type="button" id="btn-retry" class="btn btn-retry">
+                    <span aria-hidden="true">🔄</span> Coba Lagi (Retry)
+                </button>
+            </div>
+
+            <!-- Grid Kartu Produk Dinamis -->
+            <div id="product-grid" class="cards-grid" aria-live="polite">
+                <!-- Elemen <article class="card"> akan dirender via JavaScript -->
+            </div>
+
+            <!-- Empty State jika pencarian/filter tidak ditemukan -->
+            <div id="empty-state" class="state-container empty-container hidden" role="status">
+                <p class="state-text">Tidak ada produk yang memenuhi kriteria filter.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Semantik: Hak Cipta & Informasi Pengembang -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 <strong>ShopSphere</strong>. Dikembangkan secara individual untuk Penilaian Tengah Semester.</p>
+            <p class="footer-credits">
+                Nama: <strong>Muhammad Andrian Syukur Ramadhan</strong> | 
+                NPM: <strong>2440304014</strong> | 
+                Prodi S1 Teknik Komputer - Universitas Borneo Tarakan
+            </p>
+        </div>
+    </footer>
+
+    <!-- Skrip Aplikasi ES Modules -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
